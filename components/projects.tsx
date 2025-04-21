@@ -52,11 +52,11 @@ const Projects = () => {
   ]
 
   return (
-    <section id="projects" className="py-20 bg-white dark:bg-gray-900">
+    <section id="projects" className="w-full py-20 bg-gray-100 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           ref={ref}
-          className={`text-center mb-12 transition-opacity duration-700 ease-in-out ${isLoaded ? "opacity-100" : "opacity-0"}`}
+          className={`text-center mb-12 transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
         >
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Featured Projects</h2>
           <div className="w-20 h-1 bg-gray-800 dark:bg-gray-200 mx-auto"></div>
@@ -66,20 +66,36 @@ const Projects = () => {
           {projects.map((project, index) => (
             <div
               key={project.title}
-              className={`transition-all duration-700 ease-in-out ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+              className={`transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
               style={{ transitionDelay: `${index * 200}ms` }}
             >
               <div
                 className={`flex flex-col ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} gap-8 items-center`}
               >
                 <div className="w-full lg:w-1/2">
-                  <div className="relative h-64 sm:h-80 w-full rounded-lg overflow-hidden shadow-lg">
+                  <div className="relative h-64 sm:h-80 w-full rounded-lg overflow-hidden shadow-lg group">
                     <Image
                       src={project.image || "/placeholder.svg"}
                       alt={project.title}
                       fill
-                      className="object-cover transition-transform duration-500 hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
+                    <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <div className="flex gap-4">
+                        <Button variant="secondary" size="sm" asChild>
+                          <Link href={project.github} target="_blank" rel="noopener noreferrer">
+                            <Github className="h-4 w-4 mr-2" />
+                            Code
+                          </Link>
+                        </Button>
+                        <Button size="sm" asChild>
+                          <Link href={project.demo} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Demo
+                          </Link>
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

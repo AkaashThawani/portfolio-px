@@ -2,8 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,6 +15,14 @@ const Contact = () => {
     triggerOnce: true,
     threshold: 0.1,
   })
+
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    if (inView) {
+      setIsLoaded(true)
+    }
+  }, [inView])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -69,27 +76,21 @@ const Contact = () => {
   ]
 
   return (
-    <section id="contact" className="py-20 bg-gray-100 dark:bg-gray-800">
+    <section id="contact" className="w-full py-20 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <div
           ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className={`text-center mb-12 transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
         >
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Get In Touch</h2>
           <div className="w-20 h-1 bg-gray-800 dark:bg-gray-200 mx-auto"></div>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="lg:col-span-1"
+          <div
+            className={`lg:col-span-1 transition-all duration-700 delay-100 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
-            <Card className="h-full">
+            <Card className="h-full transform transition-transform hover:scale-[1.02]">
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Contact Information</h3>
                 <div className="space-y-6">
@@ -111,15 +112,12 @@ const Contact = () => {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="lg:col-span-2"
+          <div
+            className={`lg:col-span-2 transition-all duration-700 delay-200 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
-            <Card>
+            <Card className="transform transition-transform hover:scale-[1.01]">
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Send Me a Message</h3>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -135,6 +133,7 @@ const Contact = () => {
                         onChange={handleChange}
                         required
                         placeholder="Your name"
+                        className="transition-all duration-300 focus:scale-[1.01]"
                       />
                     </div>
                     <div>
@@ -152,6 +151,7 @@ const Contact = () => {
                         onChange={handleChange}
                         required
                         placeholder="Your email"
+                        className="transition-all duration-300 focus:scale-[1.01]"
                       />
                     </div>
                   </div>
@@ -169,6 +169,7 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       placeholder="Subject"
+                      className="transition-all duration-300 focus:scale-[1.01]"
                     />
                   </div>
                   <div>
@@ -186,9 +187,14 @@ const Contact = () => {
                       required
                       placeholder="Your message"
                       rows={5}
+                      className="transition-all duration-300 focus:scale-[1.01]"
                     />
                   </div>
-                  <Button type="submit" disabled={isSubmitting} className="w-full">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full transition-all duration-300 hover:scale-[1.02]"
+                  >
                     {isSubmitting ? (
                       <span className="flex items-center">
                         <svg
@@ -228,7 +234,7 @@ const Contact = () => {
                 </form>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
