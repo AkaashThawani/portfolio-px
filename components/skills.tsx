@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Database, Server, Layout, Terminal } from "lucide-react"
-import Image from "next/image"
+import TechIcon from "./tech-icon"
 
 const Skills = () => {
   const [ref, inView] = useInView({
@@ -15,82 +15,66 @@ const Skills = () => {
   const techSkills = [
     {
       name: "JavaScript",
-      icon: "/logos/javascript.svg",
       category: "frontend",
     },
     {
       name: "TypeScript",
-      icon: "/logos/typescript.svg",
       category: "frontend",
     },
     {
       name: "React",
-      icon: "/logos/react.svg",
       category: "frontend",
     },
     {
       name: "Angular",
-      icon: "/logos/angular.svg",
       category: "frontend",
     },
     {
       name: "Next.js",
-      icon: "/logos/nextjs.svg",
       category: "frontend",
     },
     {
       name: "HTML",
-      icon: "/logos/html.svg",
       category: "frontend",
     },
     {
       name: "CSS",
-      icon: "/logos/css.svg",
       category: "frontend",
     },
     {
       name: "Tailwind",
-      icon: "/logos/tailwind.svg",
       category: "frontend",
     },
     {
       name: "Node.js",
-      icon: "/logos/node.svg",
       category: "backend",
     },
     {
       name: "Django",
-      icon: "/logos/django.svg",
       category: "backend",
     },
     {
       name: "Python",
-      icon: "/logos/python.svg",
       category: "backend",
     },
     {
       name: "Java",
-      icon: "/logos/java.svg",
       category: "backend",
     },
     {
       name: "MySQL",
-      icon: "/logos/mysql.svg",
       category: "database",
     },
     {
       name: "PostgreSQL",
-      icon: "/logos/postgresql.svg",
       category: "database",
     },
     {
       name: "Git",
-      icon: "/logos/git.svg",
       category: "tools",
     },
     {
       name: "GitHub",
-      icon: "/logos/github.svg",
       category: "tools",
     },
   ]
@@ -147,14 +131,7 @@ const Skills = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {category.skills.map((skill) => (
                       <div key={skill.name} className="flex flex-col items-center">
-                        <div className="relative w-12 h-12 mb-2">
-                          <Image
-                            src={skill.icon || "/placeholder.svg"}
-                            alt={skill.name}
-                            fill
-                            className="object-contain dark:invert"
-                          />
-                        </div>
+                        <TechIcon name={skill.name} className="mb-2" />
                         <span className="text-sm text-gray-800 dark:text-gray-200">{skill.name}</span>
                       </div>
                     ))}
