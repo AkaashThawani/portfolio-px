@@ -1,12 +1,11 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ExternalLink, Github } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { ExternalLink, Github } from "lucide-react"
 
 const Projects = () => {
   const [ref, inView] = useInView({
@@ -14,92 +13,122 @@ const Projects = () => {
     threshold: 0.1,
   })
 
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    if (inView) {
+      setIsLoaded(true)
+    }
+  }, [inView])
+
   const projects = [
     {
       title: "Campus Navigation Website",
-      description:
-        "Developed a robust campus navigation system for NJIT students and visitors using Angular and Django, incorporating customizable user profiles for streamlined navigation. Integrated filter functionalities that allow users to efficiently locate buildings, departments, and facilities across the campus. Designed an analytics system to track user interactions, uncover behavior patterns, and optimize services using insights from analytics tools.",
+      description: "Interactive campus navigation system for NJIT with customizable user profiles and analytics.",
       image: "/placeholder.svg?height=400&width=600",
       technologies: ["Angular", "Django", "Analytics", "User Profiles"],
       github: "#",
       demo: "#",
+      highlights: ["Customizable user profiles", "Building & facility filters", "User behavior analytics"],
     },
     {
       title: "HackerNews UI",
-      description:
-        "Redesigned the HackerNews interface using Angular components, directives, and services, applying Material Design principles to improve user engagement by 35%. Optimized the platform's responsiveness for mobile and desktop by implementing CSS frameworks like Tailwind. Enhanced interactivity and overall user experience by leveraging Angular 14's state management features.",
+      description: "Redesigned HackerNews interface with improved UX and responsive design.",
       image: "/placeholder.svg?height=400&width=600",
-      technologies: ["Angular", "Material Design", "Tailwind CSS", "State Management"],
+      technologies: ["Angular", "Material Design", "Tailwind CSS"],
       github: "#",
       demo: "#",
+      highlights: ["35% increase in user engagement", "Responsive mobile design", "State management with Angular 14"],
     },
     {
       title: "UniTrade",
-      description:
-        "Developed a full-stack commodity trading platform with a microservices architecture for managing live and historic market data. Built a responsive React frontend styled with Tailwind CSS. Engineered a scalable backend using Node.js and Express.js, integrating PostgreSQL to manage product categories and attributes. Created REST APIs for seamless communication between frontend and backend.",
+      description: "Full-stack commodity trading platform with microservices architecture.",
       image: "/placeholder.svg?height=400&width=600",
-      technologies: ["React", "Node.js", "Express.js", "PostgreSQL", "Microservices"],
+      technologies: ["React", "Node.js", "PostgreSQL", "Microservices"],
       github: "#",
       demo: "#",
+      highlights: ["Live market data integration", "Responsive Tailwind UI", "RESTful API architecture"],
     },
   ]
 
   return (
     <section id="projects" className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <div
           ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className={`text-center mb-12 transition-opacity duration-700 ease-in-out ${isLoaded ? "opacity-100" : "opacity-0"}`}
         >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Projects</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Featured Projects</h2>
           <div className="w-20 h-1 bg-gray-800 dark:bg-gray-200 mx-auto"></div>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="space-y-20">
           {projects.map((project, index) => (
-            <motion.div
+            <div
               key={project.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className={`transition-all duration-700 ease-in-out ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+              style={{ transitionDelay: `${index * 200}ms` }}
             >
-              <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                <div className="relative h-48 w-full">
-                  <Image src={project.image || "/placeholder.svg"} alt={project.title} fill className="object-cover" />
+              <div
+                className={`flex flex-col ${index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"} gap-8 items-center`}
+              >
+                <div className="w-full lg:w-1/2">
+                  <div className="relative h-64 sm:h-80 w-full rounded-lg overflow-hidden shadow-lg">
+                    <Image
+                      src={project.image || "/placeholder.svg"}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-500 hover:scale-105"
+                    />
+                  </div>
                 </div>
-                <CardContent className="flex-grow p-6">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{project.title}</h3>
-                  <p className="text-gray-700 dark:text-gray-300 mb-4">{project.description}</p>
-                  <div className="flex flex-wrap gap-2 mt-auto">
+
+                <div className="w-full lg:w-1/2">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{project.title}</h3>
+                  <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">{project.description}</p>
+
+                  <div className="mb-6">
+                    <h4 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-2">
+                      Key Features
+                    </h4>
+                    <ul className="space-y-1">
+                      {project.highlights.map((highlight, i) => (
+                        <li key={i} className="flex items-center text-gray-700 dark:text-gray-300">
+                          <span className="mr-2 text-gray-500 dark:text-gray-400">•</span>
+                          {highlight}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
                     {project.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full text-xs"
+                        className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full text-sm"
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
-                </CardContent>
-                <CardFooter className="p-6 pt-0 flex justify-between">
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href={project.github} target="_blank" rel="noopener noreferrer">
-                      <Github className="h-4 w-4 mr-2" />
-                      Code
-                    </Link>
-                  </Button>
-                  <Button size="sm" asChild>
-                    <Link href={project.demo} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Demo
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            </motion.div>
+
+                  <div className="flex gap-4">
+                    <Button variant="outline" asChild>
+                      <Link href={project.github} target="_blank" rel="noopener noreferrer">
+                        <Github className="h-4 w-4 mr-2" />
+                        View Code
+                      </Link>
+                    </Button>
+                    <Button asChild>
+                      <Link href={project.demo} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        Live Demo
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>

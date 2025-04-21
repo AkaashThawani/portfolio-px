@@ -3,7 +3,8 @@
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent } from "@/components/ui/card"
-import { Code, Database, Server, Layout, Terminal, GitBranch } from "lucide-react"
+import { Database, Server, Layout, Terminal } from "lucide-react"
+import Image from "next/image"
 
 const Skills = () => {
   const [ref, inView] = useInView({
@@ -11,36 +12,109 @@ const Skills = () => {
     threshold: 0.1,
   })
 
+  const techSkills = [
+    {
+      name: "JavaScript",
+      icon: "/logos/javascript.svg",
+      category: "frontend",
+    },
+    {
+      name: "TypeScript",
+      icon: "/logos/typescript.svg",
+      category: "frontend",
+    },
+    {
+      name: "React",
+      icon: "/logos/react.svg",
+      category: "frontend",
+    },
+    {
+      name: "Angular",
+      icon: "/logos/angular.svg",
+      category: "frontend",
+    },
+    {
+      name: "Next.js",
+      icon: "/logos/nextjs.svg",
+      category: "frontend",
+    },
+    {
+      name: "HTML",
+      icon: "/logos/html.svg",
+      category: "frontend",
+    },
+    {
+      name: "CSS",
+      icon: "/logos/css.svg",
+      category: "frontend",
+    },
+    {
+      name: "Tailwind",
+      icon: "/logos/tailwind.svg",
+      category: "frontend",
+    },
+    {
+      name: "Node.js",
+      icon: "/logos/node.svg",
+      category: "backend",
+    },
+    {
+      name: "Django",
+      icon: "/logos/django.svg",
+      category: "backend",
+    },
+    {
+      name: "Python",
+      icon: "/logos/python.svg",
+      category: "backend",
+    },
+    {
+      name: "Java",
+      icon: "/logos/java.svg",
+      category: "backend",
+    },
+    {
+      name: "MySQL",
+      icon: "/logos/mysql.svg",
+      category: "database",
+    },
+    {
+      name: "PostgreSQL",
+      icon: "/logos/postgresql.svg",
+      category: "database",
+    },
+    {
+      name: "Git",
+      icon: "/logos/git.svg",
+      category: "tools",
+    },
+    {
+      name: "GitHub",
+      icon: "/logos/github.svg",
+      category: "tools",
+    },
+  ]
+
   const skillCategories = [
     {
       title: "Frontend",
       icon: <Layout className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: ["JavaScript", "TypeScript", "HTML", "CSS", "Angular", "React", "Next.js", "Tailwind"],
+      skills: techSkills.filter((skill) => skill.category === "frontend"),
     },
     {
       title: "Backend",
       icon: <Server className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: ["Node.js", "Django", "REST API", "Java", "Python"],
+      skills: techSkills.filter((skill) => skill.category === "backend"),
     },
     {
       title: "Database",
       icon: <Database className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: ["SQL", "MySQL", "PostgreSQL", "Database Management Systems"],
-    },
-    {
-      title: "Programming",
-      icon: <Code className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: ["Machine Learning", "Predictive Modeling", "Unit & Integration Testing", "Agile Methods"],
+      skills: techSkills.filter((skill) => skill.category === "database"),
     },
     {
       title: "Tools",
       icon: <Terminal className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: ["Git", "Postman", "VS Code", "Eclipse", "PyCharm", "Visual Studio"],
-    },
-    {
-      title: "Version Control",
-      icon: <GitBranch className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: ["Git", "GitHub", "Version Control"],
+      skills: techSkills.filter((skill) => skill.category === "tools"),
     },
   ]
 
@@ -58,7 +132,7 @@ const Skills = () => {
           <div className="w-20 h-1 bg-gray-800 dark:bg-gray-200 mx-auto"></div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {skillCategories.map((category, index) => (
             <motion.div
               key={category.title}
@@ -67,17 +141,22 @@ const Skills = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Card className="h-full hover:shadow-lg transition-shadow duration-300">
-                <CardContent className="p-6 text-center">
+                <CardContent className="p-6">
                   <div className="flex justify-center">{category.icon}</div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{category.title}</h3>
-                  <div className="flex flex-wrap justify-center gap-2">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 text-center">{category.title}</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {category.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-full text-sm"
-                      >
-                        {skill}
-                      </span>
+                      <div key={skill.name} className="flex flex-col items-center">
+                        <div className="relative w-12 h-12 mb-2">
+                          <Image
+                            src={skill.icon || "/placeholder.svg"}
+                            alt={skill.name}
+                            fill
+                            className="object-contain dark:invert"
+                          />
+                        </div>
+                        <span className="text-sm text-gray-800 dark:text-gray-200">{skill.name}</span>
+                      </div>
                     ))}
                   </div>
                 </CardContent>

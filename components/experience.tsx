@@ -1,9 +1,9 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent } from "@/components/ui/card"
-import { Calendar } from "lucide-react"
+import { Calendar, MapPin } from "lucide-react"
 
 const Experience = () => {
   const [ref, inView] = useInView({
@@ -11,18 +11,26 @@ const Experience = () => {
     threshold: 0.1,
   })
 
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    if (inView) {
+      setIsLoaded(true)
+    }
+  }, [inView])
+
   const experiences = [
     {
       title: "Software Development Engineer",
       company: "Reliance Jio",
       location: "Navi Mumbai, India",
       period: "Jul 2021 - Aug 2023",
-      responsibilities: [
-        "Created scalable Angular applications, integrating pipes, routing, data binding, and services; ensured consistent performance for 10,000+ daily active users; accelerated application loading times by 20%",
-        "Maximized user engagement by ensuring cross-platform compatibility and responsive design across 5+ screen sizes, incorporating technologies like HTML/CSS, JavaScript, and Angular to cater to a diverse range of 3+ screen sizes",
-        "Integrated data sources through seamless integration of multiple REST APIs, resulting in a 40% boost in real-time information availability across applications",
-        "Documented reusable components, including UI components, with Storybook to streamline onboarding processes, reducing new developer contribution time by up to 50%",
-        "Maintained a 95% accuracy and reliability rate for all functionalities through comprehensive testing procedures",
+      achievements: [
+        "Created scalable Angular applications for 10,000+ daily active users",
+        "Improved application loading times by 20%",
+        "Ensured cross-platform compatibility across 5+ screen sizes",
+        "Integrated multiple REST APIs, boosting real-time information by 40%",
+        "Documented UI components with Storybook, reducing onboarding time by 50%",
       ],
     },
   ]
@@ -30,49 +38,50 @@ const Experience = () => {
   return (
     <section id="experience" className="py-20 bg-white dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <div
           ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className={`text-center mb-12 transition-opacity duration-700 ease-in-out ${isLoaded ? "opacity-100" : "opacity-0"}`}
         >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Professional Experience</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Work Experience</h2>
           <div className="w-20 h-1 bg-gray-800 dark:bg-gray-200 mx-auto"></div>
-        </motion.div>
+        </div>
 
         <div className="space-y-8">
           {experiences.map((exp, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              className={`transition-all duration-700 ease-in-out ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+              style={{ transitionDelay: `${index * 200}ms` }}
             >
               <Card className="overflow-hidden border-l-4 border-gray-800 dark:border-gray-200">
                 <CardContent className="p-6">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-6">
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">{exp.title}</h3>
-                      <p className="text-lg text-gray-700 dark:text-gray-300">{exp.company}</p>
-                      <p className="text-gray-600 dark:text-gray-400">{exp.location}</p>
+                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{exp.title}</h3>
+                      <p className="text-xl text-gray-700 dark:text-gray-300">{exp.company}</p>
+                      <div className="flex items-center mt-2 text-gray-600 dark:text-gray-400">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        <span>{exp.location}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center mt-2 md:mt-0">
-                      <Calendar className="h-5 w-5 text-gray-600 dark:text-gray-400 mr-2" />
-                      <span className="text-gray-600 dark:text-gray-400">{exp.period}</span>
+                    <div className="flex items-center mt-4 md:mt-0 px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-full">
+                      <Calendar className="h-4 w-4 text-gray-600 dark:text-gray-400 mr-2" />
+                      <span className="text-gray-700 dark:text-gray-300">{exp.period}</span>
                     </div>
                   </div>
-                  <ul className="space-y-3 mt-4">
-                    {exp.responsibilities.map((responsibility, idx) => (
-                      <li key={idx} className="flex">
-                        <span className="mr-2">•</span>
-                        <span className="text-gray-700 dark:text-gray-300">{responsibility}</span>
+
+                  <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">Key Achievements</h4>
+                  <ul className="space-y-2">
+                    {exp.achievements.map((achievement, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <span className="text-gray-500 dark:text-gray-400 mr-2 mt-1">•</span>
+                        <span className="text-gray-700 dark:text-gray-300">{achievement}</span>
                       </li>
                     ))}
                   </ul>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

@@ -40,18 +40,21 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" : "bg-transparent"}`}
+      className={`fixed w-full z-50 transition-all duration-300 ${
+        scrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm" : "bg-transparent"
+      }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
+          {/* Empty div to maintain spacing */}
           <div className="flex-shrink-0 font-bold text-xl">
             <Link href="/" className="text-gray-900 dark:text-white">
-              Akaash Thawani
+              <span className="sr-only">Home</span>
             </Link>
           </div>
 
           <div className="hidden md:block">
-            <div className="ml-10 flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
