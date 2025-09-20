@@ -1,150 +1,142 @@
-"use client"
-import { useInView } from "react-intersection-observer"
-import { Card, CardContent } from "@/components/ui/card"
-import { Database, Server, Layout, Terminal } from "lucide-react"
-import TechIcon from "./tech-icon"
-import { useEffect, useState } from "react"
+// Redesigned Skills section with original tech icons
+
+import Image from "next/image"
+
+const skills = [
+  {
+    name: "JavaScript",
+    level: "Expert",
+    icon: "https://www.vectorlogo.zone/logos/javascript/javascript-icon.svg"
+  },
+  {
+    name: "TypeScript",
+    level: "Advanced",
+    icon: "https://www.vectorlogo.zone/logos/typescriptlang/typescriptlang-icon.svg"
+  },
+  {
+    name: "React",
+    level: "Expert",
+    icon: "https://www.vectorlogo.zone/logos/reactjs/reactjs-icon.svg"
+  },
+  {
+    name: "Next.js",
+    level: "Advanced",
+    icon: "https://www.vectorlogo.zone/logos/vercel/vercel-icon.svg"
+  },
+  {
+    name: "Angular",
+    level: "Advanced",
+    icon: "https://www.vectorlogo.zone/logos/angular/angular-icon.svg"
+  },
+  {
+    name: "Node.js",
+    level: "Intermediate",
+    icon: "https://www.vectorlogo.zone/logos/nodejs/nodejs-icon.svg"
+  },
+  {
+    name: "Python",
+    level: "Intermediate",
+    icon: "https://www.vectorlogo.zone/logos/python/python-icon.svg"
+  },
+  {
+    name: "Django",
+    level: "Intermediate",
+    icon: "https://www.vectorlogo.zone/logos/djangoproject/djangoproject-icon.svg"
+  },
+  {
+    name: "HTML5",
+    level: "Expert",
+    icon: "https://www.vectorlogo.zone/logos/w3_html5/w3_html5-icon.svg"
+  },
+  {
+    name: "CSS",
+    level: "Expert",
+    icon: "https://www.vectorlogo.zone/logos/w3_css/w3_css-icon.svg"
+  },
+  {
+    name: "Tailwind CSS",
+    level: "Advanced",
+    icon: "https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg"
+  },
+  {
+    name: "PostgreSQL",
+    level: "Intermediate",
+    icon: "https://www.vectorlogo.zone/logos/postgresql/postgresql-icon.svg"
+  },
+  {
+    name: "MySQL",
+    level: "Intermediate",
+    icon: "https://www.vectorlogo.zone/logos/mysql/mysql-icon.svg"
+  },
+  {
+    name: "Git",
+    level: "Expert",
+    icon: "https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg"
+  },
+  { name: "REST APIs", level: "Advanced", icon: "" },
+]
 
 const Skills = () => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
-
-  const [isLoaded, setIsLoaded] = useState(false)
-
-  useEffect(() => {
-    if (inView) {
-      setIsLoaded(true)
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case 'Expert':
+        return 'from-green-400 to-green-600'
+      case 'Advanced':
+        return 'from-blue-400 to-blue-600'
+      case 'Intermediate':
+        return 'from-yellow-400 to-yellow-600'
+      default:
+        return 'from-gray-400 to-gray-600'
     }
-  }, [inView])
-
-  const techSkills = [
-    {
-      name: "JavaScript",
-      category: "frontend",
-    },
-    {
-      name: "TypeScript",
-      category: "frontend",
-    },
-    {
-      name: "React",
-      category: "frontend",
-    },
-    {
-      name: "Angular",
-      category: "frontend",
-    },
-    {
-      name: "Next.js",
-      category: "frontend",
-    },
-    {
-      name: "HTML",
-      category: "frontend",
-    },
-    {
-      name: "CSS",
-      category: "frontend",
-    },
-    {
-      name: "Tailwind",
-      category: "frontend",
-    },
-    {
-      name: "Node.js",
-      category: "backend",
-    },
-    {
-      name: "Django",
-      category: "backend",
-    },
-    {
-      name: "Python",
-      category: "backend",
-    },
-    {
-      name: "Java",
-      category: "backend",
-    },
-    {
-      name: "MySQL",
-      category: "database",
-    },
-    {
-      name: "PostgreSQL",
-      category: "database",
-    },
-    {
-      name: "Git",
-      category: "tools",
-    },
-    {
-      name: "GitHub",
-      category: "tools",
-    },
-  ]
-
-  const skillCategories = [
-    {
-      title: "Frontend",
-      icon: <Layout className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: techSkills.filter((skill) => skill.category === "frontend"),
-    },
-    {
-      title: "Backend",
-      icon: <Server className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: techSkills.filter((skill) => skill.category === "backend"),
-    },
-    {
-      title: "Database",
-      icon: <Database className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: techSkills.filter((skill) => skill.category === "database"),
-    },
-    {
-      title: "Tools",
-      icon: <Terminal className="h-8 w-8 mb-4 text-gray-800 dark:text-gray-200" />,
-      skills: techSkills.filter((skill) => skill.category === "tools"),
-    },
-  ]
+  }
 
   return (
-    <section id="skills" className="w-full py-20 bg-white dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div
-          ref={ref}
-          className={`text-center mb-12 transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-        >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Skills</h2>
-          <div className="w-20 h-1 bg-gray-800 dark:bg-gray-200 mx-auto"></div>
-        </div>
+    <section id="skills" className="max-w-6xl mx-auto px-4 min-h-screen flex flex-col justify-center">
+      <h2 className="text-3xl font-extrabold text-accent mb-16 text-center">Skills & Technologies</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {skillCategories.map((category, index) => (
-            <div
-              key={category.title}
-              className={`transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-              style={{ transitionDelay: `${index * 150}ms` }}
-            >
-              <Card className="h-full hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]">
-                <CardContent className="p-6">
-                  <div className="flex justify-center">{category.icon}</div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 text-center">{category.title}</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {category.skills.map((skill) => (
-                      <div key={skill.name} className="flex flex-col items-center group">
-                        <div className="transform transition-transform duration-300 group-hover:scale-110">
-                          <TechIcon name={skill.name} className="mb-2" />
-                        </div>
-                        <span className="text-sm text-gray-800 dark:text-gray-200">{skill.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        {skills.map((skill, index) => (
+          <div
+            key={skill.name}
+            className="group bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer"
+            style={{ animationDelay: `${index * 0.05}s` }}
+          >
+            <div className="flex flex-col items-center text-center space-y-3">
+              {skill.icon ? (
+                <div className="w-12 h-12 flex items-center justify-center">
+                  <Image
+                    src={skill.icon}
+                    alt={skill.name}
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              ) : (
+                <div className="text-2xl">🌐</div>
+              )}
+              <h3 className="font-bold text-white text-sm">{skill.name}</h3>
+              <div className={`w-full h-1 bg-gradient-to-r ${getLevelColor(skill.level)} rounded-full`}></div>
+              <div className="text-xs text-gray-400 font-medium">{skill.level}</div>
             </div>
-          ))}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-12 text-center">
+        <div className="inline-flex items-center gap-8 px-6 py-3 bg-gray-800 rounded-full shadow-sm border border-gray-700">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-green-600 rounded-full"></div>
+            <span className="text-sm text-gray-200 font-semibold">Expert</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></div>
+            <span className="text-sm text-gray-200 font-semibold">Advanced</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full"></div>
+            <span className="text-sm text-gray-200 font-semibold">Intermediate</span>
+          </div>
         </div>
       </div>
     </section>
