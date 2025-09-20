@@ -5,7 +5,8 @@ import { useInView } from "react-intersection-observer"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ExternalLink, Github } from "lucide-react"
+import { ExternalLink, Github, Loader2, AlertCircle } from "lucide-react"
+import { ProjectData } from "@/lib/types"
 
 const Projects = () => {
   const [ref, inView] = useInView({
@@ -14,6 +15,9 @@ const Projects = () => {
   })
 
   const [isLoaded, setIsLoaded] = useState(false)
+  const [projects, setProjects] = useState<ProjectData[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (inView) {
@@ -21,35 +25,36 @@ const Projects = () => {
     }
   }, [inView])
 
-  const projects = [
-    {
-      title: "Campus Navigation Website",
-      description: "Interactive campus navigation system for NJIT with customizable user profiles and analytics.",
-      image: "/placeholder.svg?height=400&width=600",
-      technologies: ["Angular", "Django", "Analytics", "User Profiles"],
-      github: "#",
-      demo: "#",
-      highlights: ["Customizable user profiles", "Building & facility filters", "User behavior analytics"],
-    },
-    {
-      title: "HackerNews UI",
-      description: "Redesigned HackerNews interface with improved UX and responsive design.",
-      image: "/placeholder.svg?height=400&width=600",
-      technologies: ["Angular", "Material Design", "Tailwind CSS"],
-      github: "#",
-      demo: "#",
-      highlights: ["35% increase in user engagement", "Responsive mobile design", "State management with Angular 14"],
-    },
-    {
-      title: "UniTrade",
-      description: "Full-stack commodity trading platform with microservices architecture.",
-      image: "/placeholder.svg?height=400&width=600",
-      technologies: ["React", "Node.js", "PostgreSQL", "Microservices"],
-      github: "#",
-      demo: "#",
-      highlights: ["Live market data integration", "Responsive Tailwind UI", "RESTful API architecture"],
-    },
-  ]
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Get GitHub username from environment variable or use default
+        const username = process.env.NEXT_PUBLIC_GITHUB_USERNAME || 'AkaashThawani'
+
+        const response = await fetch(`/api/github?username=${username}`)
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to fetch projects')
+        }
+
+        const data = await response.json()
+        setProjects(data.projects || [])
+      } catch (err) {
+        console.error('Error fetching projects:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load projects')
+        // Fallback to empty array if API fails
+        setProjects([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProjects()
+  }, [])
 
   return (
     <section id="projects" className="w-full py-20 bg-gray-100 dark:bg-gray-800">
@@ -62,8 +67,39 @@ const Projects = () => {
           <div className="w-20 h-1 bg-gray-800 dark:bg-gray-200 mx-auto"></div>
         </div>
 
-        <div className="space-y-20">
-          {projects.map((project, index) => (
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-gray-600 dark:text-gray-400 mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">Loading projects from GitHub...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <AlertCircle className="h-8 w-8 text-red-500 mb-4" />
+            <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+            <Button
+              variant="outline"
+              onClick={() => window.location.reload()}
+              className="text-red-600 border-red-600 hover:bg-red-50 dark:text-red-400 dark:border-red-400 dark:hover:bg-red-950"
+            >
+              Try Again
+            </Button>
+          </div>
+        )}
+
+        {!loading && !error && projects.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-20">
+            <p className="text-gray-600 dark:text-gray-400 mb-4">No projects found</p>
+            <p className="text-sm text-gray-500 dark:text-gray-500">
+              Make sure your GitHub username is correct and you have public repositories.
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && projects.length > 0 && (
+          <div className="space-y-20">
+            {projects.map((project, index) => (
             <div
               key={project.title}
               className={`transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
@@ -146,7 +182,8 @@ const Projects = () => {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   )
