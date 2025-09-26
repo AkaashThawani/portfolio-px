@@ -7,17 +7,26 @@ function extractDescriptionFromReadme(readmeContent: string, repoName: string = 
 
   // Split into lines and clean up
   const lines = readmeContent.split('\n').map(line => line.trim())
-  console.log(lines)
+
   // Look for "# Description" section (simple approach)
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]?.toLowerCase()?.trim()
-    
+
     if (line === '# description') {
-      // Found the description section, take the next line if it exists
-      const nextLine = lines[i + 1]?.trim()
-      if (nextLine && nextLine.length > 0) {
-        console.log(`✅ ${repoName}: Found description: "${nextLine.substring(0, 60)}..."`)
-        return nextLine
+      // Found the description section, find the next non-empty line
+      console.log(`🎯 Found # description at line ${i}`)
+      for (let j = i + 1; j < lines.length; j++) {
+        const nextLine = lines[j]?.trim()
+        console.log(`Checking line ${j}: "${nextLine}"`)
+        if (nextLine && nextLine.length > 0 && !nextLine.startsWith('#')) {
+          console.log(`✅ ${repoName}: Found description: "${nextLine.substring(0, 60)}..."`)
+          return nextLine
+        }
+        // Stop if we hit another heading
+        if (nextLine.startsWith('#')) {
+          console.log(`🛑 Hit another heading at line ${j}, stopping`)
+          break
+        }
       }
     }
   }
