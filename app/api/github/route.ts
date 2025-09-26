@@ -32,7 +32,7 @@ function extractDescriptionFromReadme(readmeContent: string, repoName: string = 
 
 // Process README fetching with optimizations
 async function fetchRepoDescription(repo: GitHubRepository, token: string | undefined): Promise<string | null> {
-  const possibleReadmeNames = ['README.md', 'Readme.md', 'readme.md']
+  const possibleReadmeNames = ['README.md']
 
   for (const readmeName of possibleReadmeNames) {
     try {

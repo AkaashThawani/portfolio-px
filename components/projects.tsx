@@ -148,6 +148,9 @@ const Projects = () => {
   }
 
   const filteredProjects = projects.filter(project => {
+    // Hide projects with placeholder descriptions
+    if (project.description === 'No description available') return false
+
     if (filter === "all") return true
 
     if (filter === "fullstack") {
@@ -203,7 +206,8 @@ const Projects = () => {
   }
 
   const ProjectCard = ({ project, index }: { project: ProjectData; index: number }) => (
-    <div className="project-card group block hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 hover:scale-105">
+    
+    <div  className="project-card group block hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-8 hover:scale-105">
       <div className="relative">
         <div className="aspect-video rounded-2xl overflow-hidden bg-gray-700 mb-6">
           <Image
@@ -227,7 +231,12 @@ const Projects = () => {
         <h3 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors leading-tight">
           {project.title}
         </h3>
-        <p className="text-gray-300 text-base leading-relaxed line-clamp-4">{project.description}</p>
+        
+        
+        {project.description !== 'No description available' && (
+          <p className="text-gray-300 text-base leading-relaxed line-clamp-4">{project.description}</p>
+        )}
+        
 
         {/* Highlights */}
         {project.highlights && project.highlights.length > 0 && (
