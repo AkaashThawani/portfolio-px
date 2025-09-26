@@ -37,7 +37,7 @@ const Projects = () => {
         }
         const data = await response.json()
         console.log('GitHub API Response:', data) // Debug log
-        setProjects(data.projects?.slice(0, 8) || []) // Get up to 8 projects
+        setProjects(data.projects || []) // Get All projects
       } catch (err) {
         console.error('Error fetching projects:', err)
         setError(`Failed to load projects: ${err instanceof Error ? err.message : 'Unknown error'}`)

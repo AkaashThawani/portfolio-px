@@ -2,6 +2,10 @@
 
 A modern, responsive personal portfolio website built with Next.js, React, TypeScript, and Tailwind CSS. Features dynamic GitHub integration, dark/light theme support, and showcase sections for skills, projects, and experience.
 
+# Description
+
+Portfolio-PX is a cutting-edge personal portfolio platform designed to showcase developers' skills, projects, and experience.
+
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/akaashthawanis-projects/v0-protfolio)
 [![Built with TypeScript](https://img.shields.io/badge/Built%20with-TypeScript-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
@@ -134,8 +138,17 @@ For enhanced features like higher API limits and private repositories:
    ```
 3. Benefits: 5000 API calls/hour (vs 60 without token), access to private repos
 
+### Smart Description Handling
+The portfolio automatically pulls project descriptions using this priority:
+
+1. **GitHub Repository Description** - The description field in repository settings
+2. **README.md Content** - Extracts description from the `# Description` section in README.md files
+3. **Fallback** - "No description available" if neither exists
+
+**For Your Projects:** Simply add a `# Description` section followed by a short description line in your project READMEs, and your portfolio will automatically use that content.
+
 ### API Endpoint
-- `GET /api/github?username={username}` - Fetches user's repositories with stats (stars, forks, language, topics)
+- `GET /api/github?username={username}` - Fetches user's repositories with stats (stars, forks, language, topics) and smart description extraction
 
 ## 📝 Available Scripts
 
