@@ -12,26 +12,59 @@ function extractDescriptionFromReadme(readmeContent: string, repoName: string = 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]?.toLowerCase()?.trim()
 
-    if (line === '# description') {
+    if (line === '# description' || line === '# Description') {
       // Found the description section, find the next non-empty line
-      console.log(`🎯 Found # description at line ${i}`)
       for (let j = i + 1; j < lines.length; j++) {
         const nextLine = lines[j]?.trim()
-        console.log(`Checking line ${j}: "${nextLine}"`)
         if (nextLine && nextLine.length > 0 && !nextLine.startsWith('#')) {
-          console.log(`✅ ${repoName}: Found description: "${nextLine.substring(0, 60)}..."`)
           return nextLine
         }
         // Stop if we hit another heading
         if (nextLine.startsWith('#')) {
-          console.log(`🛑 Hit another heading at line ${j}, stopping`)
           break
         }
       }
     }
   }
 
-  console.log(`❌ ${repoName}: No "# Description" section found`)
+  return null
+}
+
+// Process README fetching with optimizations
+async function fetchRepoDescription(repo: GitHubRepository, token: string | undefined): Promise<string | null> {
+  const possibleReadmeNames = ['README.md', 'Readme.md', 'readme.md']
+
+  for (const readmeName of possibleReadmeNames) {
+    try {
+      const response = await fetch(
+        `https://api.github.com/repos/${repo.full_name}/contents/${readmeName}`,
+        {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+            'Accept': 'application/vnd.github.v3+json',
+            'User-Agent': 'Portfolio-NextJS-App'
+          }
+        }
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.content) {
+          const content = Buffer.from(data.content, 'base64').toString('utf-8')
+          const description = extractDescriptionFromReadme(content, repo.name)
+          if (description) {
+            return description
+          }
+        }
+      }
+    } catch (error) {
+      // Continue to next README variant
+    }
+
+    // Small delay to respect rate limits
+    await new Promise(resolve => setTimeout(resolve, 100))
+  }
+
   return null
 }
 
@@ -64,23 +97,8 @@ export async function GET(request: NextRequest) {
     if (!reposResponse.ok) {
       const errorData: GitHubApiError = await reposResponse.json()
       console.error('GitHub API Error:', errorData)
-
-      if (reposResponse.status === 404) {
-        return NextResponse.json(
-          { error: 'GitHub user not found' },
-          { status: 404 }
-        )
-      }
-
-      if (reposResponse.status === 403) {
-        return NextResponse.json(
-          { error: 'GitHub API rate limit exceeded. Please add a GitHub token.' },
-          { status: 403 }
-        )
-      }
-
       return NextResponse.json(
-        { error: errorData.message || 'Failed to fetch repositories' },
+        { error: 'Failed to fetch repositories' },
         { status: reposResponse.status }
       )
     }
@@ -95,105 +113,77 @@ export async function GET(request: NextRequest) {
       !repo.disabled
     )
 
-    // Get languages for each repository
-    const projects: ProjectData[] = await Promise.all(
-      filteredRepos.map(async (repo) => {
-        let languages: GitHubLanguages = {}
-        let technologies: string[] = []
+    // Process all repos with optimized parallel README fetching
+    const results = await Promise.allSettled(
+      filteredRepos.map(async (repo, index) => {
+        return new Promise<ProjectData>(async (resolve) => {
+          // Stagger requests to avoid hitting rate limits
+          setTimeout(async () => {
+            // Priority: GitHub description > README parsing
+            let description = repo.description
 
-        try {
-          const languagesResponse = await fetch(repo.languages_url, {
-            headers: {
-              'Authorization': token ? `Bearer ${token}` : '',
-              'Accept': 'application/vnd.github.v3+json',
-              'User-Agent': 'Portfolio-NextJS-App'
+            if (!description) {
+              description = await fetchRepoDescription(repo, token)
             }
-          })
 
-          if (languagesResponse.ok) {
-            languages = await languagesResponse.json()
-            technologies = Object.keys(languages)
-          }
-        } catch (error) {
-          console.error(`Failed to fetch languages for ${repo.name}:`, error)
-        }
-
-        // Create highlights based on repository data
-        const highlights = []
-        if (repo.stargazers_count > 0) {
-          highlights.push(`${repo.stargazers_count} GitHub ${repo.stargazers_count === 1 ? 'star' : 'stars'}`)
-        }
-        if (repo.forks_count > 0) {
-          highlights.push(`${repo.forks_count} ${repo.forks_count === 1 ? 'fork' : 'forks'}`)
-        }
-        if (repo.has_pages && repo.homepage) {
-          highlights.push('GitHub Pages deployed')
-        }
-        if (repo.topics.length > 0) {
-          highlights.push(`Topics: ${repo.topics.slice(0, 3).join(', ')}`)
-        }
-
-        // Get description from README if repository description is missing
-        let description = repo.description
-
-        if (!description) {
-          console.log(`📖 ${repo.name}: No GitHub description, fetching README...`)
-
-          try {
-            const readmeResponse = await fetch(
-              `https://api.github.com/repos/${repo.full_name}/contents/README.md`,
-              {
+            let technologies: string[] = []
+            try {
+              const languagesResponse = await fetch(repo.languages_url, {
                 headers: {
                   'Authorization': token ? `Bearer ${token}` : '',
                   'Accept': 'application/vnd.github.v3+json',
                   'User-Agent': 'Portfolio-NextJS-App'
                 }
+              })
+              if (languagesResponse.ok) {
+                const languagesData = await languagesResponse.json()
+                technologies = Object.keys(languagesData || {})
               }
-            )
-
-            if (readmeResponse.ok) {
-              const readmeData = await readmeResponse.json()
-              if (readmeData.content) {
-                // Decode base64 content
-                const readmeContent = Buffer.from(readmeData.content, 'base64').toString('utf-8')
-                console.log(`📄 ${repo.name}: README fetched (${readmeContent.length} chars)`)
-
-                // Extract description from README
-                const extractedDescription = extractDescriptionFromReadme(readmeContent, repo.name)
-                console.log(`📝 ${repo.name}: Extracted description: "${extractedDescription}"`)
-
-                description = extractedDescription
-              }
-            } else {
-              console.log(`❌ ${repo.name}: README fetch failed: ${readmeResponse.status}`)
+            } catch (error) {
+              console.error(`Failed to fetch languages for ${repo.name}`)
             }
-          } catch (error) {
-            console.error(`💥 ${repo.name}: README fetch error:`, error)
-          }
-        }
 
-        console.log(`📝 ${repo.name}: Using ${description ? 'extracted README' : 'repository'} description: "${description || 'No description available'}"`)
+            const highlights = []
+            if (repo.stargazers_count > 0) {
+              highlights.push(`${repo.stargazers_count} GitHub ${repo.stargazers_count === 1 ? 'star' : 'stars'}`)
+            }
+            if (repo.forks_count > 0) {
+              highlights.push(`${repo.forks_count} ${repo.forks_count === 1 ? 'fork' : 'forks'}`)
+            }
+            if (repo.has_pages && repo.homepage) {
+              highlights.push('GitHub Pages deployed')
+            }
+            if (repo.topics.length > 0) {
+              highlights.push(`Topics: ${repo.topics.slice(0, 3).join(', ')}`)
+            }
 
-        return {
-          title: repo.name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-          description: description || 'No description available',
-          image: `https://opengraph.githubassets.com/1/${repo.full_name}`,
-          technologies: technologies.length > 0 ? technologies : [repo.language || 'Other'],
-          github: repo.html_url,
-          demo: repo.homepage || repo.html_url,
-          highlights: highlights.length > 0 ? highlights : ['Open source project'],
-          stars: repo.stargazers_count,
-          forks: repo.forks_count,
-          language: repo.language,
-          topics: repo.topics,
-          created_at: repo.created_at,
-          updated_at: repo.updated_at
-        }
+            resolve({
+              title: repo.name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              description: description || 'No description available',
+              image: `https://opengraph.githubassets.com/1/${repo.full_name}`,
+              technologies: technologies.length > 0 ? technologies : [repo.language || 'Other'],
+              github: repo.html_url,
+              demo: repo.homepage || repo.html_url,
+              highlights: highlights.length > 0 ? highlights : ['Open source project'],
+              stars: repo.stargazers_count,
+              forks: repo.forks_count,
+              language: repo.language,
+              topics: repo.topics,
+              created_at: repo.created_at,
+              updated_at: repo.updated_at
+            })
+          }, index * 200) // Stagger by 200ms per repo
+        })
       })
     )
 
-    // Sort by most recently updated
-    projects.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+    // Extract successful results and sort by most recently updated
+    const projects = results
+      .filter(result => result.status === 'fulfilled')
+      .map(result => (result as PromiseFulfilledResult<ProjectData>).value)
+      .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+
+    console.log(`✅ Processed ${projects.length} projects with optimized parallel README fetching`)
 
     return NextResponse.json({ projects })
 

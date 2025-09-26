@@ -37,6 +37,7 @@ const Projects = () => {
         }
         const data = await response.json()
         console.log('GitHub API Response:', data) // Debug log
+        console.log('Projects data:', data.projects) // Debug log
         setProjects(data.projects || []) // Get All projects
       } catch (err) {
         console.error('Error fetching projects:', err)
@@ -292,7 +293,7 @@ const Projects = () => {
   )
 
   return (
-    <section className="min-h-screen flex flex-col justify-center px-4 mb-16">
+    <section id="projects" className="min-h-screen flex flex-col justify-center px-4 mb-16">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">

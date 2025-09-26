@@ -10,13 +10,13 @@ const Hero = () => {
       <div className="max-w-3xl w-full mx-auto text-center">
         <h1 className="hero-title mb-4 animate-bounce-in">Akaash Thawani</h1>
         <h2 className="hero-subtitle mb-6 animate-fade-slide-left">Full Stack Engineer</h2>
-        <p className="text-lg text-gray-600 dark:text-gray-300 mb-10 animate-fade-slide-right">
-          Front-End Engineer with expertise in Angular, React, and Next.js.<br />
-          Currently pursuing a Master's in Computer Science at NJIT.
+        <p className="text-lg text-gray-400 dark:text-gray-400 mb-10 animate-fade-slide-right">
+          Full Stack Engineer with expertise in Angular, React, and Next.js.<br />
+          Graduated from Master's in Computer Science at NJIT.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="#projects" className="hero-btn btn-pulse">View Projects</Link>
-          <Link href="#contact" className="hero-btn bg-white text-gray-900 border border-gray-900 hover:bg-accent hover:text-white transition font-semibold">Get In Touch</Link>
+          {/* <Link href="#contact" className="hero-btn bg-white text-gray-900 border border-gray-900 hover:bg-accent hover:text-white transition font-semibold">Get In Touch</Link> */}
         </div>
         <div className="flex justify-center gap-6 mt-10">
           <Link href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent transition-colors text-2xl">

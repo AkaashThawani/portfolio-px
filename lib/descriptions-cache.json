@@ -1,0 +1,21 @@
+{
+  "portfolio-px": "A modern, responsive personal portfolio website built with Next.js, React, TypeScript, and Tailwind CSS. Features dynamic GitHub integration, dark/light theme support, and showcase sections for skills, projects, and experience.",
+  "vscode-agent": "An experimental VS Code extension that integrates an autonomous AI agent into your development workflow, allowing you to delegate coding tasks to an AI-powered pair programmer that analyzes codebases and executes changes.",
+  "django-njit": "NJIT WEB DEV PROJECT",
+  "hn": "Hacker News clone application with modern web technologies and responsive design.",
+  "sales-order-intake-automation": "Automated sales order intake system with workflow processing and integration capabilities.",
+  "streamlit-rag-chat": "Retrieval-Augmented Generation (RAG) chat application built with Streamlit and Python.",
+  "rag-chat": "Intelligent chat application powered by Retrieval-Augmented Generation technology.",
+  "promptflow": "Workflow automation tool for managing and executing AI prompts and tasks.",
+  "rate-my-setup": "Web application for users to rate and review computer setups and configurations.",
+  "python-sandbox": "Interactive Python development sandbox with online code execution environment.",
+  "flaskapi": "RESTful API built with Flask framework for backend services and data management.",
+  "my-hangman": "Classic Hangman word game implementation with Ruby language.",
+  "hangperson": "Word guessing game application built with Ruby framework.",
+  "uniTrade-team1": "Team project for university trading platform with collaborative development.",
+  "defendNJIT": "Security-focused project for NJIT systems and applications protection.",
+  "portfolio": "Personal portfolio website showcasing projects and skills with modern web technologies.",
+  "dbms": "Database management system project with comprehensive data handling capabilities.",
+  "campusNavigator": "Campus navigation application with interactive maps and location services.",
+  "javapractice": "Java programming practice exercises and implementation examples."
+}
