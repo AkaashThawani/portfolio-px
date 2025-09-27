@@ -98,21 +98,30 @@ const Skills = () => {
     <section id="skills" className="max-w-6xl mx-auto px-4 min-h-screen flex flex-col justify-center relative">
       {/* CSS-based 3D floating elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: -1 }}>
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-12 h-12 border-2 border-white opacity-30 animate-rotate3d"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 7}s`,
-              transform: `rotate(${Math.random() * 360}deg)`,
-            }}
-          >
-            <div className="w-full h-full bg-gradient-to-br from-white to-transparent opacity-20" />
-          </div>
-        ))}
+        {Array.from({ length: 20 }, (_, i) => {
+          const seed = i * 0.618033988749; // Golden ratio for deterministic positioning
+          const x = ((seed * 1000) % 100).toFixed(2);
+          const y = (((seed * 0.38196601125) * 1000) % 100).toFixed(2);
+          const delay = ((seed * 0.123456789) % 5).toFixed(3);
+          const duration = (3 + ((seed * 0.987654321) % 7)).toFixed(3);
+          const rotation = ((seed * 0.555555555) % 360).toFixed(2);
+
+          return (
+            <div
+              key={i}
+              className="absolute w-12 h-12 border-2 border-white opacity-30 animate-rotate3d"
+              style={{
+                left: `${x}%`,
+                top: `${y}%`,
+                animationDelay: `${delay}s`,
+                animationDuration: `${duration}s`,
+                transform: `rotate(${rotation}deg)`,
+              }}
+            >
+              <div className="w-full h-full bg-gradient-to-br from-white to-transparent opacity-20" />
+            </div>
+          );
+        })}
       </div>
       <h2 className="text-3xl font-extrabold text-accent mb-16 text-center">Skills & Technologies</h2>
 

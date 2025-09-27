@@ -10,18 +10,26 @@ const Hero = () => {
       <div className="absolute inset-0">
         {/* Simple CSS-based particles effect */}
         <div className="absolute inset-0">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-2 h-2 bg-white rounded-full animate-float animate-glow"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 3}s`,
-              }}
-            />
-          ))}
+          {Array.from({ length: 50 }, (_, i) => {
+            const seed = i * 0.618033988749; // Golden ratio for deterministic positioning
+            const x = ((seed * 1000) % 100).toFixed(2);
+            const y = (((seed * 0.38196601125) * 1000) % 100).toFixed(2);
+            const delay = ((seed * 0.123456789) % 3).toFixed(3);
+            const duration = (2 + ((seed * 0.987654321) % 3)).toFixed(3);
+
+            return (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-white rounded-full animate-float animate-glow"
+                style={{
+                  left: `${x}%`,
+                  top: `${y}%`,
+                  animationDelay: `${delay}s`,
+                  animationDuration: `${duration}s`,
+                }}
+              />
+            );
+          })}
         </div>
         {/* Connecting lines effect */}
         <svg className="absolute inset-0 w-full h-full">
