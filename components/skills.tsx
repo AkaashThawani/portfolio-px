@@ -1,6 +1,10 @@
-// Redesigned Skills section with original tech icons
+// Redesigned Skills section with original tech icons and 3D background
+
+"use client"
 
 import Image from "next/image"
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef } from "react";
 
 const skills = [
   {
@@ -76,6 +80,24 @@ const skills = [
   { name: "REST APIs", level: "Advanced", icon: "" },
 ]
 
+const RotatingBox = () => {
+  const meshRef = useRef<any>();
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += 0.005;
+      meshRef.current.rotation.y += 0.005;
+    }
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <boxGeometry args={[2, 2, 2]} />
+      <meshStandardMaterial color="#ffffff" opacity={0.1} transparent />
+    </mesh>
+  );
+};
+
 const Skills = () => {
   const getLevelColor = (level: string) => {
     switch (level) {
@@ -91,7 +113,12 @@ const Skills = () => {
   }
 
   return (
-    <section id="skills" className="max-w-6xl mx-auto px-4 min-h-screen flex flex-col justify-center">
+    <section id="skills" className="max-w-6xl mx-auto px-4 min-h-screen flex flex-col justify-center relative">
+      <Canvas className="absolute inset-0" style={{ zIndex: -1 }} camera={{ position: [0, 0, 5] }}>
+        <ambientLight intensity={0.8} />
+        <pointLight position={[10, 10, 10]} intensity={1} />
+        <RotatingBox />
+      </Canvas>
       <h2 className="text-3xl font-extrabold text-accent mb-16 text-center">Skills & Technologies</h2>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">

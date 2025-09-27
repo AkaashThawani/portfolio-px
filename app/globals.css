@@ -250,18 +250,6 @@ input:focus, textarea:focus, select:focus {
   position: relative;
 }
 
-/* Add dark overlay for consistent title readability */
-.hero-gradient::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at center, transparent 30%, rgba(15, 23, 42, 0.3) 100%);
-  pointer-events: none;
-}
-
 @keyframes gradientShift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

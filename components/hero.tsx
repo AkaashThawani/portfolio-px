@@ -1,13 +1,86 @@
+"use client"
+
 // Redesigned Hero section for minimal, elegant portfolio
 
-"use client"
+import Particles from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim";
+import { useMemo } from "react";
 
 import Link from "next/link"
 
 const Hero = () => {
+  const particlesInit = async (engine: any) => {
+    await loadSlim(engine);
+  };
+
+  const particlesOptions = useMemo(() => ({
+    background: {
+      color: {
+        value: "#000000",
+      },
+    },
+    fpsLimit: 120,
+    interactivity: {
+      events: {
+        onClick: {
+          enable: true,
+          mode: "push",
+        },
+        onHover: {
+          enable: true,
+          mode: "repulse",
+        },
+      },
+      modes: {
+        push: {
+          quantity: 4,
+        },
+        repulse: {
+          distance: 200,
+          duration: 0.4,
+        },
+      },
+    },
+    particles: {
+      color: {
+        value: "#ffffff",
+      },
+      links: {
+        color: "#ffffff",
+        distance: 150,
+        enable: true,
+        opacity: 0.8,
+        width: 1,
+      },
+      move: {
+        enable: true,
+        random: false,
+        speed: 2,
+        straight: false,
+      },
+      number: {
+        density: {
+          enable: true,
+        },
+        value: 200,
+      },
+      opacity: {
+        value: 0.8,
+      },
+      shape: {
+        type: "circle",
+      },
+      size: {
+        value: { min: 1, max: 5 },
+      },
+    },
+    detectRetina: true,
+  }), []);
+
   return (
-    <section className="hero-gradient min-h-screen flex flex-col items-center justify-center px-4">
-      <div className="max-w-3xl w-full mx-auto text-center">
+    <section className="min-h-screen flex flex-col items-center justify-center px-4 relative bg-gray-900">
+      <Particles id="tsparticles" options={particlesOptions} className="absolute inset-0" />
+      <div className="max-w-3xl w-full mx-auto text-center relative z-10">
         <h1 className="hero-title mb-4 animate-bounce-in">Akaash Thawani</h1>
         <h2 className="hero-subtitle mb-6 animate-fade-slide-left">Full Stack Engineer</h2>
         <p className="text-lg text-gray-400 dark:text-gray-400 mb-10 animate-fade-slide-right">
