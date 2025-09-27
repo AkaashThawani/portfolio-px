@@ -2,84 +2,37 @@
 
 // Redesigned Hero section for minimal, elegant portfolio
 
-import Particles from "@tsparticles/react";
-import { loadSlim } from "@tsparticles/slim";
-import { useMemo } from "react";
-
 import Link from "next/link"
 
 const Hero = () => {
-  const particlesInit = async (engine: any) => {
-    await loadSlim(engine);
-  };
-
-  const particlesOptions = useMemo(() => ({
-    background: {
-      color: {
-        value: "#000000",
-      },
-    },
-    fpsLimit: 120,
-    interactivity: {
-      events: {
-        onClick: {
-          enable: true,
-          mode: "push",
-        },
-        onHover: {
-          enable: true,
-          mode: "repulse",
-        },
-      },
-      modes: {
-        push: {
-          quantity: 4,
-        },
-        repulse: {
-          distance: 200,
-          duration: 0.4,
-        },
-      },
-    },
-    particles: {
-      color: {
-        value: "#ffffff",
-      },
-      links: {
-        color: "#ffffff",
-        distance: 150,
-        enable: true,
-        opacity: 0.8,
-        width: 1,
-      },
-      move: {
-        enable: true,
-        random: false,
-        speed: 2,
-        straight: false,
-      },
-      number: {
-        density: {
-          enable: true,
-        },
-        value: 200,
-      },
-      opacity: {
-        value: 0.8,
-      },
-      shape: {
-        type: "circle",
-      },
-      size: {
-        value: { min: 1, max: 5 },
-      },
-    },
-    detectRetina: true,
-  }), []);
-
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-4 relative bg-gray-900">
-      <Particles id="tsparticles" options={particlesOptions} className="absolute inset-0" />
+      <div className="absolute inset-0">
+        {/* Simple CSS-based particles effect */}
+        <div className="absolute inset-0">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-white rounded-full animate-float animate-glow"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
+        {/* Connecting lines effect */}
+        <svg className="absolute inset-0 w-full h-full">
+          <defs>
+            <pattern id="dots" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1" fill="white" opacity="0.3" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots)" />
+        </svg>
+      </div>
       <div className="max-w-3xl w-full mx-auto text-center relative z-10">
         <h1 className="hero-title mb-4 animate-bounce-in">Akaash Thawani</h1>
         <h2 className="hero-subtitle mb-6 animate-fade-slide-left">Full Stack Engineer</h2>
