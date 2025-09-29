@@ -6,6 +6,11 @@ export default function ViewTracker() {
   useEffect(() => {
     // Call the views API to track the visit
     const trackView = async () => {
+      // Don't track admin pages
+      if (window.location.pathname.startsWith('/admin')) {
+        return
+      }
+
       try {
         await fetch('/api/views', {
           method: 'POST',

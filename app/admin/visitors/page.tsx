@@ -80,15 +80,15 @@ export default function AdminVisitorsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="card project-card">
-          <h2 className="text-xl font-semibold mb-2 text-accent">Total Visits</h2>
-          <p className="text-3xl font-bold" style={{ color: '#6366f1' }}>{stats?.totalVisits || 0}</p>
+          <h2 className="text-xl font-semibold mb-2 text-accent">Unique Visitors</h2>
+          <p className="text-3xl font-bold" style={{ color: '#6366f1' }}>{stats?.uniqueIPs || 0}</p>
         </div>
         <div className="card project-card">
-          <h2 className="text-xl font-semibold mb-2 text-accent">Unique IPs</h2>
-          <p className="text-3xl font-bold" style={{ color: '#10b981' }}>{stats?.uniqueIPs || 0}</p>
+          <h2 className="text-xl font-semibold mb-2 text-accent">Total Page Views</h2>
+          <p className="text-3xl font-bold" style={{ color: '#10b981' }}>{stats?.totalVisits || 0}</p>
         </div>
         <div className="card project-card">
-          <h2 className="text-xl font-semibold mb-2 text-accent">Countries</h2>
+          <h2 className="text-xl font-semibold mb-2 text-accent">Countries Reached</h2>
           <p className="text-3xl font-bold" style={{ color: '#a855f7' }}>{stats?.countries.length || 0}</p>
         </div>
       </div>
