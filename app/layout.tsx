@@ -5,6 +5,7 @@ import "./globals.css"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import ViewTracker from "@/components/view-tracker"
+import { ThemeProvider } from "@/components/background-switcher"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,10 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Navbar />
-        <ViewTracker />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+        <ThemeProvider>
+          <Navbar />
+          <ViewTracker />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   )

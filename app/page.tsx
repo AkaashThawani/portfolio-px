@@ -1,15 +1,15 @@
 import Hero from "@/components/hero"
-import About from "@/components/about"
 import Skills from "@/components/skills"
-import Projects from "@/components/projects"
+import ThreeColumnProjects from "@/components/three-column-projects"
+import { BackgroundSwitcher } from "@/components/background-switcher"
 
 export default function Home() {
   return (
-    <main>
+    <main className="relative">
+      <BackgroundSwitcher />
       <Hero />
-      <About />
       <Skills />
-      <Projects />
+      <ThreeColumnProjects />
     </main>
   )
 }
