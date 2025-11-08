@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Github, ExternalLink, Star, GitFork, Calendar, Code, TrendingUp } from "lucide-react"
 import Image from "next/image"
@@ -51,6 +51,10 @@ const ThreeColumnProjects = () => {
   const [loading, setLoading] = useState(true)
   const { currentTheme } = useTheme()
 
+  // Cache key for GitHub API results
+  const CACHE_KEY = 'github-projects-cache'
+  const CACHE_DURATION = 1000 * 60 * 60 // 1 hour in milliseconds
+
   // Get seasonal colors for gradient background (using CSS variables with proper rgba syntax)
   const getSeasonalColors = () => {
     switch (currentTheme) {
@@ -87,22 +91,67 @@ const ThreeColumnProjects = () => {
 
   const colors = getSeasonalColors()
 
+  // Cached project fetching with localStorage
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        // Check for cached data first
+        const cachedData = localStorage.getItem(CACHE_KEY)
+        if (cachedData) {
+          const { data, timestamp } = JSON.parse(cachedData)
+          const isExpired = Date.now() - timestamp > CACHE_DURATION
+
+          if (!isExpired && data.projects && data.projects.length > 0) {
+            console.log('Using cached GitHub projects data')
+            setProjects(data.projects)
+            setSelectedProject(data.projects[0])
+            setLoading(false)
+            return
+          }
+        }
+
+        // Fetch fresh data if no cache or expired
+        console.log('Fetching fresh GitHub projects data')
         const response = await fetch('/api/github?username=AkaashThawani')
         if (!response.ok) {
           throw new Error(`API Error: ${response.status} - ${response.statusText}`)
         }
         const data = await response.json()
         const fetchedProjects = data.projects || []
+
+        // Cache the successful response
+        if (fetchedProjects.length > 0) {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data,
+            timestamp: Date.now()
+          }))
+        }
+
         setProjects(fetchedProjects)
         if (fetchedProjects.length > 0) {
           setSelectedProject(fetchedProjects[0])
         }
       } catch (err) {
         console.error('Error fetching projects:', err)
-        // Fallback projects
+
+        // Try to use cached data even if expired as fallback
+        const cachedData = localStorage.getItem(CACHE_KEY)
+        if (cachedData) {
+          try {
+            const { data } = JSON.parse(cachedData)
+            if (data.projects && data.projects.length > 0) {
+              console.log('Using expired cached data as fallback')
+              setProjects(data.projects)
+              setSelectedProject(data.projects[0])
+              setLoading(false)
+              return
+            }
+          } catch (cacheErr) {
+            console.error('Error parsing cached data:', cacheErr)
+          }
+        }
+
+        // Use fallback projects if no cache available
         const fallbackProjects: ProjectData[] = [
           {
             title: "Modern Portfolio Website",
@@ -193,7 +242,9 @@ const ThreeColumnProjects = () => {
       <div
         className="absolute inset-0 z-10"
         style={{
-          background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+          background: `radial-gradient(circle at 20% 50%, ${colors.primary} 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, ${colors.secondary} 0%, transparent 50%),
+                      radial-gradient(circle at 40% 80%, ${colors.primary} 0%, transparent 50%)`,
           backdropFilter: 'blur(0.5px)'
         }}
       />
@@ -217,7 +268,9 @@ const ThreeColumnProjects = () => {
       <div
         className="absolute inset-0 z-10"
         style={{
-          background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+          background: `radial-gradient(circle at 20% 50%, ${colors.primary} 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, ${colors.secondary} 0%, transparent 50%),
+                      radial-gradient(circle at 40% 80%, ${colors.primary} 0%, transparent 50%)`,
           backdropFilter: 'blur(0.5px)'
         }}
       />
@@ -239,7 +292,9 @@ const ThreeColumnProjects = () => {
       <div
         className="absolute inset-0 z-10"
         style={{
-          background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
+          background: `radial-gradient(circle at 20% 50%, ${colors.primary} 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, ${colors.secondary} 0%, transparent 50%),
+                      radial-gradient(circle at 40% 80%, ${colors.primary} 0%, transparent 50%)`,
           backdropFilter: 'blur(0.5px)'
         }}
       />
@@ -274,20 +329,20 @@ const ThreeColumnProjects = () => {
                   key={project.title}
                   onClick={() => setSelectedProject(project)}
                   className={`w-full text-left p-4 rounded-full transition-all duration-300 ${selectedProject.title === project.title
-                      ? 'bg-white/20 border-2 border-white/30 shadow-lg scale-105'
+                      ? 'bg-white/30 border-4 border-white/50 shadow-inner scale-[0.95]'
                       : 'bg-white/10 border-2 border-white/20 hover:bg-white/15 hover:border-white/25'
                     }`}
                   style={{
                     backdropFilter: 'blur(12px) brightness(0.9) contrast(1.3)',
                     boxShadow: selectedProject.title === project.title
-                      ? '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 white'
+                      ? 'inset 0 3px 6px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 4px rgba(0, 0, 0, 0.08)'
                       : '0 4px 16px rgba(0, 0, 0, 0.08)',
                     color: '#1e293b', // dark text
                     background: selectedProject.title === project.title
-                      ? 'rgba(255, 255, 255, 0.15)' // white background for selected
-                      : 'white' // white background for normal
+                      ? 'rgba(255, 255, 255, 0.35)' // even more opaque glassy background for selected
+                      : 'rgba(255, 255, 255, 0.1)' // glassy background for normal
                   }}
-                  whileHover={{ scale: selectedProject.title === project.title ? 1.05 : 1.02 }}
+                  whileHover={{ scale: selectedProject.title === project.title ? 0.97 : 1.02 }}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -318,10 +373,10 @@ const ThreeColumnProjects = () => {
             <motion.div
               className="relative rounded-2xl overflow-hidden flex-1 flex flex-col"
               style={{
-                background: 'white',
+                background: 'rgba(255, 255, 255, 0.1)',
                 backdropFilter: 'blur(12px) brightness(0.9) contrast(1.3)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 white',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 color: '#1e293b' // dark text
               }}
               whileHover={{
@@ -448,10 +503,10 @@ const ThreeColumnProjects = () => {
             <motion.div
               className="p-6 rounded-2xl flex-1 flex flex-col"
               style={{
-                background: 'white', // white background
+                background: 'rgba(255, 255, 255, 0.1)',
                 backdropFilter: 'blur(12px) brightness(0.9) contrast(1.3)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 white',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 color: '#1e293b' // dark text
               }}
               whileHover={{
@@ -487,10 +542,10 @@ const ThreeColumnProjects = () => {
             <motion.div
               className="p-6 rounded-2xl flex-1 flex flex-col"
               style={{
-                background: 'white', // white background
+                background: 'rgba(255, 255, 255, 0.1)',
                 backdropFilter: 'blur(12px) brightness(0.9) contrast(1.3)',
                 border: '2px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 white',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                 color: '#1e293b' // dark text
               }}
               whileHover={{

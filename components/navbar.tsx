@@ -269,16 +269,7 @@ const Navbar = () => {
               >
                 <Link
                   href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    setIsMenuOpen(false)
-                    const element = document.getElementById(link.href.substring(1))
-                    if (element) {
-                      setTimeout(() => {
-                        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                      }, 100)
-                    }
-                  }}
+                  onClick={() => setIsMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${activeSection === link.href.substring(1)
                     ? "text-white bg-primary shadow-md"
                     : "text-text hover:text-primary hover:bg-gray-50"
