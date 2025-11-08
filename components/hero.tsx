@@ -218,39 +218,7 @@ const Hero = () => {
             className="flex flex-col items-center justify-center space-y-8"
             variants={itemVariants}
           >
-            {/* Social Links */}
-            <motion.div
-              className="flex space-x-6"
-              variants={containerVariants}
-            >
-              {[
-                { Icon: Github, href: "https://github.com/AkaashThawani", label: "GitHub" },
-                { Icon: Linkedin, href: "https://linkedin.com/in/akaash-thawani", label: "LinkedIn" },
-                { Icon: Mail, href: "mailto:akaash.thawani@gmail.com", label: "Email" }
-              ].map(({ Icon, href, label }, index) => (
-                <motion.div
-                  key={label}
-                  custom={index}
-                  variants={socialVariants}
-                  whileHover={{
-                    scale: 1.2,
-                    rotate: 5,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <Link
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-4 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 hover:bg-white/20 transition-all duration-300 group"
-                    aria-label={label}
-                  >
-                    <Icon className="w-6 h-6 text-white group-hover:text-blue-300 transition-colors" />
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
+        
 
             {/* Animated Profile Visual */}
             <motion.div
